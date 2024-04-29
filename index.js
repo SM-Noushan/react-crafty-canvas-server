@@ -40,7 +40,7 @@ async function run() {
 
     // get all data
     app.get("/painting-and-drawing", async (req, res) => {
-      let featured = req.query?.featured;
+      const featured = req.query?.featured;
       const cursor = paintingAndDrawingCollection.find();
       const result = await cursor.toArray();
       if (featured) {
@@ -53,12 +53,20 @@ async function run() {
       } else res.send(result);
     });
 
-    // get single data
+    // get specific data - single or many
     app.get("/painting-and-drawing/:id", async (req, res) => {
+      const myCraft = req.query?.myCraft;
       const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await paintingAndDrawingCollection.findOne(filter);
-      res.send(result);
+      if (myCraft) {
+        const filter = { userUID: id };
+        const cursor = paintingAndDrawingCollection.find(filter);
+        const result = await cursor.toArray();
+        res.send(result);
+      } else {
+        const filter = { _id: new ObjectId(id) };
+        const result = await paintingAndDrawingCollection.findOne(filter);
+        res.send(result);
+      }
     });
 
     // store painting data
