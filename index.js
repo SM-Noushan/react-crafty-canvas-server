@@ -78,6 +78,16 @@ async function run() {
       );
       res.send(result);
     });
+
+    // delete data
+    app.delete("/painting-and-drawing/:id", async (req, res) => {
+      const id = req.params.id;
+      /* Delete the first document in the "painting-and-drawing" collection that matches
+      the specified query document */
+      const remove = { _id: new ObjectId(id) };
+      const result = await paintingAndDrawingCollection.deleteOne(remove);
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
