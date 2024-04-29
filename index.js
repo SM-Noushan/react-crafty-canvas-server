@@ -49,8 +49,16 @@ async function run() {
           (item1, item2) =>
             parseFloat(item2.itemRating) - parseFloat(item1.itemRating)
         );
-        res.send(updatedResult.slice(0, 6));
+        res.send(updatedResult.slice(0, 8));
       } else res.send(result);
+    });
+
+    // get single data
+    app.get("/painting-and-drawing/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await paintingAndDrawingCollection.findOne(filter);
+      res.send(result);
     });
 
     // store painting data
