@@ -38,6 +38,21 @@ async function run() {
       "painting-and-drawing"
     );
 
+    // get all data
+    app.get("/painting-and-drawing", async (req, res) => {
+      let featured = req.query?.featured;
+      const cursor = paintingAndDrawingCollection.find();
+      const result = await cursor.toArray();
+      if (featured) {
+        // sorted based on rating
+        updatedResult = result.sort(
+          (item1, item2) =>
+            parseFloat(item2.itemRating) - parseFloat(item1.itemRating)
+        );
+        res.send(updatedResult.slice(0, 6));
+      } else res.send(result);
+    });
+
     // store painting data
     app.post("/painting-and-drawing", async (req, res) => {
       const newItemDetails = req.body;
