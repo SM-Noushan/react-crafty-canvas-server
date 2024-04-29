@@ -12,7 +12,6 @@ app.use(express.json());
 
 // database link
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.b6wqjn1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-console.log(uri);
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -29,10 +28,25 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
+
+    // Connect to the "crafty-canvas" database and access its "painting-and-drawing" collection
+    const craftyCanvasDB = client.db("crafty-canvas");
+    const paintingAndDrawingCollection = craftyCanvasDB.collection(
+      "painting-and-drawing"
+    );
+
+    // store painting data
+    app.post("/painting-and-drawing", async (req, res) => {
+      const newItemDetails = req.body;
+      // insert the defined document into the "painting-and-drawing" collection
+      const result = await paintingAndDrawingCollection.insertOne(
+        newItemDetails
+      );
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
