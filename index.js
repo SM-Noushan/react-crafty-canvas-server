@@ -126,6 +126,17 @@ async function run() {
       const result = await paintingAndDrawingCollection.deleteOne(remove);
       res.send(result);
     });
+
+    // Connect to the "crafty-canvas" database and access its "sub-category-info" collection
+    const subCategoryInfoCollection =
+      craftyCanvasDB.collection("sub-category-info");
+
+    // get all data
+    app.get("/sub-category", async (req, res) => {
+      const cursor = subCategoryInfoCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
