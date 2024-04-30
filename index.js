@@ -79,6 +79,44 @@ async function run() {
       res.send(result);
     });
 
+    // update  data
+    app.put("/painting-and-drawing/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedItem = req.body;
+      const {
+        imageURL,
+        itemName,
+        subCategoryName,
+        shortDescription,
+        itemCustomization,
+        itemStock,
+        itemRating,
+        itemPrice,
+        processingTime,
+      } = updatedItem;
+      const updateQuery = {
+        $set: {
+          imageURL,
+          itemName,
+          subCategoryName,
+          shortDescription,
+          itemCustomization,
+          itemStock,
+          itemRating,
+          itemPrice,
+          processingTime,
+        },
+      };
+      const result = await paintingAndDrawingCollection.updateOne(
+        filter,
+        updateQuery,
+        options
+      );
+      res.send(result);
+    });
+
     // delete data
     app.delete("/painting-and-drawing/:id", async (req, res) => {
       const id = req.params.id;
