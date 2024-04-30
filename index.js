@@ -41,15 +41,23 @@ async function run() {
     // get all data
     app.get("/painting-and-drawing", async (req, res) => {
       const featured = req.query?.featured;
+      const subCategory = req.query?.category;
       const cursor = paintingAndDrawingCollection.find();
       const result = await cursor.toArray();
       if (featured) {
         // sorted based on rating
-        updatedResult = result.sort(
+        const updatedResult = result.sort(
           (item1, item2) =>
             parseFloat(item2.itemRating) - parseFloat(item1.itemRating)
         );
         res.send(updatedResult.slice(0, 8));
+      }
+      // filtering based on sub-category
+      else if (subCategory) {
+        const updatedResult = result.filter(
+          (r) => r.subCategoryName.toLowerCase() === subCategory.toLowerCase()
+        );
+        res.send(updatedResult);
       } else res.send(result);
     });
 
